@@ -1,5 +1,50 @@
 (in-package #:cl-coinpayments)
 
+(defclass ipn-status ()
+  ())
+
+(defclass ipn-failure (ipn-status)
+  ())
+
+(defclass ipn-payment-pending (ipn-status)
+  ())
+
+(defclass ipn-payment-success (ipn-status)
+  ())
+
+(defclass negative-2 (ipn-failure)
+  ()
+  (:documentation "Paypal Refund or Reversal"))
+
+(defclass negative-1 (ipn-failure)
+  ()
+  (:documentation "Cancelled/Timed out"))
+
+(defclass zero (ipn-payment-pending)
+  ()
+  (:documentation "Waiting for buyer funds."))
+
+(defclass one (ipn-payment-pending)
+  ()
+  (:documentation "We have confirmed coin reception from the buyer."))
+
+(defclass two (ipn-payment-pending)
+  ()
+  (:documentation "queued for nightly payout. (if you have Payout Mode for this coin 
+set to Nightly)"))
+
+(defclass three (ipn-payment-pending)
+  ()
+  (:documentation "PayPal Pending (eChecks of other types of holds)"))
+
+(defclass five (ipn-payment-pending)
+  ()
+  (:documentation "In Escrow (if you are using SetEscrow)"))
+
+(defclass one-hundred (ipn-payment-success)
+  ()
+  (:documentation "Payment complete"))
+
 (defclass coinpayment-ipn ()
   ((IPN-VERSION
     :documentation "1.0"
