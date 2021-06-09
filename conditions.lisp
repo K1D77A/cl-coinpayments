@@ -29,3 +29,38 @@
      (format stream "An IPN was received that is unknown. IPN: ~A. See (plist <condition>) ~
                     for the original post data."
              (ipn obj)))))
+
+(define-condition no-dispatcher-found (coinpayment-condition)
+  ((name
+    :accessor name
+    :initarg :name
+    :documentation "The name of the dispatcher.")
+   (ipn
+    :accessor ipn
+    :initarg :ipn
+    :documentation "The IPN in question.")
+   (status
+    :accessor status
+    :initarg :status
+    :documentation "The STATUS in question.")
+   (arg-count
+    :accessor arg-count
+    :initarg :arg-count
+    :documentation "The number of ARGS for the dispatcher.")
+   (ipn-type
+    :accessor ipn-type
+    :initarg :ipn-type
+    :documentation "The ipn-type of the dispatcher.")
+   (status-type
+    :accessor status-type
+    :initarg :status-type
+    :documentation "The status-type of the dispatcher."))
+  (:documentation "Signalled when an IPN dispatcher cant be found.")
+  (:report
+   (lambda (obj stream)
+     (format stream "Cannot find dispatcher for NAME: ~A. IPN-TYPE: ~A. STATUS-TYPE: ~A ~
+                     with ~D ARGS.~%"
+             (name obj)
+             (ipn-type obj)
+             (status-type obj)
+             (arg-count obj)))))

@@ -4,9 +4,11 @@
   :description "Helpers for working with the coinpayments.net api."
   :author "K1D77A"
   :license  "MIT"
-  :version "0.0.1"
+  :version "1.0.0"
   :depends-on (#:str
-               #:ironclad)
+               #:ironclad
+               #:babel
+               #:closer-mop)
   :serial t
   :components ((:file "package")
                (:file "conditions")
