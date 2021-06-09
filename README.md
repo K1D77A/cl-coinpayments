@@ -99,11 +99,14 @@ CL-COINPAYMENTS> (construct-status *)
  
 This returns two values, with the most easily referenced being the new status object.
 The status objects rules are described here: https://www.coinpayments.net/merchant-tools-ipn 
- under the heading 'Payment Statuses'. If you look in classes.lisp you can see the 
- relationship between the status objects, CLOS is used to represent the relationship 
- described in those docs, so the class one-hundred is a subclass of ipn-payment-success
- and ipn-payment-success is a subclass of ipn-status etc, this is important for the next
- part.
+If the status cannot be determined (which probably means the request is bogus) 
+the condition 'unknown-status is signalled.
+
+Under the heading 'Payment Statuses'. If you look in classes.lisp you can see the 
+relationship between the status objects, CLOS is used to represent the relationship 
+described in those docs, so the class one-hundred is a subclass of ipn-payment-success
+and ipn-payment-success is a subclass of ipn-status etc, this is important for the next
+part.
  
 ## Dispatching on statuses
 
