@@ -120,15 +120,6 @@ final HMAC from the merchant-secret-key and the post-string which was previously
         (compute-hmac (merchant-secret-key request) (post-string request)))
   request)
 
-(defparameter *coinpayment-public*
-  "e230ef1549efa93b0532614848f5fb59743b501ac2fe28443347c7ea8a30f725")
-
-(defparameter *coinpayment-private*
-  "2bf9cC812459276344E03adCcA759Abd59794c2737310e5905E6a0DE26d08569")
-
-(defparameter *coinpayment-ipn-secret*
-  "74135719592311430188328")
-
 (defmethod request ((request request))
   "When given a constructed REQUEST object, attempts to use the object to make 
 a request to the coinpayments API. If successfully returns a 'good-response object,
