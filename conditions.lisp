@@ -87,3 +87,4 @@ required slots")
      (format stream "One or more required slots hasn't been set. Required: ~A~%Not set: ~A"
              (required obj)
              (not-set obj)))))
+

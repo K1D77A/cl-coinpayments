@@ -2,9 +2,8 @@
 This is simply a helper library for using working with the original version of the 
 coinpayment.net API, there is a new version of the API in the works.
 
-Currently no API calls from server->API are implemented, only API->server, the IPN system.
 
-## Intro
+# Intro
 The coinpayment IPN (Instant Payment Notification) system sends messages to a listening 
 server to inform the server of activity within their coinpayment account, whether this is 
 to inform the user of a processed payment, whether a payment has failed etc. 
@@ -18,6 +17,10 @@ The post data sent from the coinpayment server is formatted in snake case ie
 all the snake_case keys are converted to kebab case ie i-am-a-variable, so 
 `ipn_type` would be the keyword `:IPN-TYPE`. Parsing is memoized so it should be
 pretty fast.
+
+# Working with IPN's
+
+This section is talking about the IPN's, the next is about API calls.
 
 ## Parsing the IPN's
 
@@ -191,7 +194,55 @@ Just a note the list '(:IPN-TYPE "transfer") is the most basic of IPN's represen
 plist that is required for this to function, this is why it is used in the examples, in 
 a real world example the IPN would be what has been received and parsed by (parse-data ..)
 
+# Working with the API.
 
+In cl-coinpayments API requests are all represented by objects, so if you wish to make 
+an API call you instantiate an object of the request type, pass in the correct arguments
+as initargs and then call the method `(request <instance>)` on it. Its important to note
+that the :merchant-secret-key initarg is the special key *YOU* gave to coinpayments as your
+secret, not the API secret automatically generated.
+
+```lisp
+
+CL-COINPAYMENTS> (make-instance 'get-basic-info :merchant-secret-key *coinpayment-private* :key *coinpayment-public*)
+#<GET-BASIC-INFO {100230D643}>
+
+```
+This request has the following slots:
+```lisp
+[ ]  CMD                 = "get_basic_info"
+[ ]  DEX-ALIST           = (("version" . "1") ("key" . <removed for privacy>) ("cmd" . "get_basic_info") ("format" . "json"))
+[ ]  FORMAT              = "json"
+[ ]  HMAC                = "c776c7821d4d7c785c5971652e6139ab5499ca3f7af195e8bd4dc5b56aeae91be8185e42a98d2af843bfa8a88062ac76362a5759f2cbdc612b9a6ece2a37a478"
+[ ]  KEY                 = <removed for privacy>
+[ ]  MERCHANT-SECRET-KEY = <removed for privacy>
+[ ]  NONCE               = #<unbound>
+[ ]  POST-STRING         = "version=1&key=<removed for privacy>&cmd=get_basic_info&format=json"
+[ ]  REQUIRED            = (MERCHANT-SECRET-KEY KEY)
+[ ]  VERSION             = "1"
+```
+
+All requests inherit their slots from the toplevel class `'request`, currently 
+the nonce is not used but if you wanted to use it you can, if you set the value to an 
+integer represented as a string then it will also be added into the post params and the HMAC.
+The same goes for if you modify any of the slots that are used for storing values 
+which are later used in the post request. You could change FORMAT to XML, however 
+that would probably break `(request ..)` so maybe dont do that.
+
+Each request within the docs https://www.coinpayments.net/apidoc-intro has its own class
+and they are all listed in api-forms.lisp. 
+If you try to make a request object without providing 'required' arguments then
+you will get an error of type `'required-slots-not-bound' 
+```lisp
+CL-COINPAYMENTS> (make-instance 'create-transfer :merchant-secret-key *coinpayment-private* :key *coinpayment-public* :amount "1" :currency "btc")
+; Debugger entered on #<REQUIRED-SLOTS-NOT-BOUND {1002506873}>
+[1] CL-COINPAYMENTS> 
+; Evaluation aborted on #<REQUIRED-SLOTS-NOT-BOUND {1002506873}>
+```
+
+I think that all of the API calls will work except maybe `create-mass-withdrawal` which 
+I have not tested but it has some odd characteristics, so dont rely on it to work. 
+If you do test it and find it doesn't work just open an issue and I'll fix it. 
 
 ## License
 
