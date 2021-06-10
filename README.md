@@ -200,7 +200,7 @@ In cl-coinpayments API requests are all represented by objects, so if you wish t
 an API call you instantiate an object of the request type, pass in the correct arguments
 as initargs and then call the method `(request <instance>)` on it. Its important to note
 that the :merchant-secret-key initarg is the special key *YOU* gave to coinpayments as your
-secret, not the API secret automatically generated.
+secret, not the API secret automatically generated and :key is your API public key.
 
 ```lisp
 
