@@ -64,3 +64,26 @@
              (ipn-type obj)
              (status-type obj)
              (arg-count obj)))))
+
+(define-condition coinpayment-api-condition (coinpayment-condition)
+  ()
+  (:documentation "Top level api condition"))
+
+(define-condition required-slots-not-bound (coinpayment-api-condition)
+  ((required
+    :accessor required
+    :initarg :required
+    :type list
+    :documentation "A list of required slots.")
+   (not-set
+    :accessor not-set
+    :initarg :not-set
+    :type list
+    :documentation "A list of the required that weren't set."))
+  (:documentation "Signalled when you try to instantiate a class but dont set 
+required slots")
+  (:report
+   (lambda (obj stream)
+     (format stream "One or more required slots hasn't been set. Required: ~A~%Not set: ~A"
+             (required obj)
+             (not-set obj)))))

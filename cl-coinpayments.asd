@@ -8,9 +8,11 @@
   :depends-on (#:str
                #:ironclad
                #:babel
+               #:dexador
                #:closer-mop)
   :serial t
   :components ((:file "package")
                (:file "conditions")
                (:file "classes")
-               (:file "cl-coinpayments")))
+               (:file "cl-coinpayments")
+               (:file "api-helpers")))

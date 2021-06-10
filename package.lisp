@@ -29,7 +29,7 @@
            #:ipn-type
            #:status-type
            ;;main variables
-           #:*ipn-dispaters*
+           #:*ipn-dispatchers*
            ;;funs and macros
            #:new-ipn-dispatcher
            #:def-ipn-dispatcher
