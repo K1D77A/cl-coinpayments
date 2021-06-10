@@ -222,6 +222,29 @@ This request has the following slots:
 [ ]  VERSION             = "1"
 ```
 
+When a response is received it is parsed into either a good-response or bad-response object:
+```lisp
+CL-COINPAYMENTS> (make-instance 'get-basic-info :merchant-secret-key *coinpayment-private* :key *coinpayment-public*)
+#<GET-BASIC-INFO {101A377823}>
+CL-COINPAYMENTS> (request *)
+#<BAD-RESPONSE {101B67EC63}>
+CL-COINPAYMENTS> (make-instance 'currency-prices :merchant-secret-key *coinpayment-private* :key *coinpayment-public*)
+#<CURRENCY-PRICES {101B8E9323}>
+CL-COINPAYMENTS> (request *)
+#<GOOD-RESPONSE {101879EC63}>
+CL-COINPAYMENTS> 
+```
+The slots look like this:
+```lisp
+[ ]  DEX-EXTRA   = (:CODE 200 :HEADERS #<HASH-TABLE :TEST EQUAL :COUNT 11 {1001CF6FB3}> :URL #<QURI.URI.HTTP:URI-HTTPS https://www.coinpayments.net/api.php> :STREAM #<CL+SSL::SSL-STREAM for #<FD-STREAM for "socket 192.168.200.16:49534, peer: 205.220.231.4:443" {1001B3AF73}>>)
+[ ]  ERROR-SLOT  = "This API Key does not have permission to use that command!"
+[ ]  REQUEST     = #<GET-BASIC-INFO {10018804D3}>
+[ ]  RESULT-SLOT = NIL
+```
+All of the values returned by dex:post that are not directly used are stored in 
+DEX-EXTRA, RESULT-SLOT contains any parsed results, ERROR-SLOT will either be 'ok' or 
+a descriptive string, and REQUEST is the object used to send the request.
+
 All requests inherit their slots from the toplevel class `'request`, currently 
 the nonce is not used but if you wanted to use it you can, if you set the value to an 
 integer represented as a string then it will also be added into the post params and the HMAC.
