@@ -71,15 +71,23 @@ not your API secret key but the key *you* provided as a 'secret'
 and either the parsed plist, the raw-data or a string consisting of post parameters like so:
 
 ```lisp
+(hunchentoot:define-easy-handler (ipn :uri "/ipnreceiver" )
+    ()
   (let* ((headers (tbnl:headers-in*))
          (hmac (cdr (assoc :hmac headers)))
          (raw-data (tbnl:raw-post-data))
          (plist (cl-coinpayments::parse-data (tbnl:post-parameters*))))
     (when (and (string= (getf plist :merchant) *coinpayment-merchant-id*)
-               (cl-coinpayments:verify-data hmac *coinpayment-ipn-secret*
+               (cl-coinpayments::verify-data hmac *coinpayment-ipn-secret*
                                              raw-data))
-        <do something>
-        ))
+      (let ((status (cl-coinpayments:construct-status plist)))
+        (handler-case 
+            (cl-coinpayments:dispatch-ipn-by-name process plist status)
+          (cl-coinpayments:no-dispatcher-found (c)
+            (log:warn "Received an IPN that wasn't handled explicitly. Status: ~A~%IPN: ~A"
+                      (cl-coinpayments:status c)
+                      (cl-coinpayments:ipn c)))))))
+  "done")
 ```
 
 In the above example I also confirm that my merchants ID and the merchants ID sent are
