@@ -26,6 +26,12 @@
 (defclass bad-response (response)
   ())
 
+(defmethod print-object ((obj bad-response) stream)
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "ERROR: ~A"
+            (when (slot-boundp obj 'error-slot)
+              (error-slot obj)))))
+
 (defclass request ()
   ((version
     :accessor version

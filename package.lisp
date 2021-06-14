@@ -2,6 +2,7 @@
 
 (defpackage #:cl-coinpayments
   (:use #:cl)
+  (:nicknames #:coin)
   (:export #:ipn-status
            #:ipn-failure
            #:ipn-payment-pending
