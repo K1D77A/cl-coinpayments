@@ -55,10 +55,11 @@
 
 (defmethod validate-slots ((request create-withdrawal))
   "Special method for create-transfer which has two slots one of either must be set."
-  (when (or (slot-boundp request 'merchant)
+  (when (or (slot-boundp request 'domain)
+            (slot-boundp request 'address)
             (slot-boundp request 'pbntag)
-            (error 'required-slots-not-bound :not-set '(merchant pbntag)
-                                             :required '(:OR merchant pbntag)))
+            (error 'required-slots-not-bound :not-set '(address pbntag domain)
+                                             :required '(:OR domain pbntag address)))
     (call-next-method)))
 
 (new-request create-mass-withdrawal "create_mass_withdrawal"
